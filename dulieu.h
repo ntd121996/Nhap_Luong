@@ -1,28 +1,28 @@
-#ifndef DULIEU_H
-#define DULIEU_H
+//#ifndef DULIEU_H
+//#define DULIEU_H
 
-#include <QWidget>
-#include <QString>
+//#include <QWidget>
+//#include <QString>
 
-class DuLieu
-{
-//    Q_OBJECT
+//class DuLieu
+//{
+////    Q_OBJECT
 
 
-public:
-    QString MaNhanVien;
-    QString MaSanPham;
-    QString TenNhanVien;
-    QString Ngay;
-    QString So;
-    QString Loai;
-    DuLieu();
-    DuLieu( QString MaNhanVien,
-            QString TenNhanVien,
-            QString MaSanPham,
-            QString Ngay,
-            QString So,
-            QString Loai );
-};
+//public:
+//    QString MaNhanVien;
+//    QString MaSanPham;
+//    QString TenNhanVien;
+//    QString Ngay;
+//    QString So;
+//    QString Loai;
+//    DuLieu();
+//    DuLieu( QString MaNhanVien,
+//            QString TenNhanVien,
+//            QString MaSanPham,
+//            QString Ngay,
+//            QString So,
+//            QString Loai );
+//};
 
-#endif // DULIEU_H
+//#endif // DULIEU_H
