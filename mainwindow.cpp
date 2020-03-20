@@ -1,18 +1,23 @@
 #include "mainwindow.h"
-QMap< int, QString > HienThiCanNhap =
-{
-    {ViTriNgay," Ngay: "},
-    {ViTriSo," So: "},
-    {ViTriLoai," Loai: "},
-    {ViTriNhanVien," NhanVien: "},
-    {ViTriMaSanPham," Ma SP: "},
-};
+
+//{
+//    {ViTriNgay," Ngay: "},
+//    {ViTriSo," So: "},
+//    {ViTriLoai," Loai: "},
+//    {ViTriNhanVien," NhanVien: "},
+//    {ViTriMaSanPham," Ma SP: "},
+//};
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     QVBoxLayout *mainLayout = new QVBoxLayout();
     QWidget *mainWindow = new QWidget();
     SoLanNhap = 0;
+    HienThiCanNhap.insert( ViTriNgay," Ngay: ");
+    HienThiCanNhap.insert( ViTriSo," So: ");
+    HienThiCanNhap.insert( ViTriLoai," Loai: ");
+    HienThiCanNhap.insert( ViTriNhanVien," NhanVien: ");
+    HienThiCanNhap.insert( ViTriMaSanPham," Ma SP: ");
     readDataBase();
     creatMenu();
     creategridGroupBox();
@@ -33,7 +38,6 @@ MainWindow::~MainWindow()
 {
     delete menuBar;
     delete fileMenu;
-    delete horizonGroup;
     delete gridGroup;
     delete gridLayout;
     for ( int i = 0; i < SOLUONG; ++i )

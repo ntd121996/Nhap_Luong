@@ -74,6 +74,7 @@ private:
     QString MaNhanVien;
     QStandardItem *item1[SOLUONG];
     QMap<QString,QString > ThongTinNhanVien;
+    QMap< int, QString > HienThiCanNhap;
     int SoLanNhap;
     void creatMenu();
     void creatHorizonGroupBox();
@@ -86,7 +87,7 @@ private slots:
     void ButtonSaveClicked();
 public:
 
-    MainWindow(QWidget *parent = nullptr);
+    MainWindow(QWidget *parent = NULL);
     ~MainWindow();
 };
 #endif // DIALOG_H

@@ -1,10 +1,12 @@
 QT       += core gui
+QT += gui-private
 QT += sql
 #QT += xlsx
 #QT += axcontainer
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11
+CONFIG += c++98
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -28,10 +30,10 @@ HEADERS += \
     dulieu.h \
     mainwindow.h
 
-  QXLSX_PARENTPATH=../QXlsx/QXlsx/
-  QXLSX_HEADERPATH=../QXlsx/QXlsx/header/
-  QXLSX_SOURCEPATH=../QXlsx/QXlsx/source/
-include(../QXlsx/QXlsx/QXlsx.pri)
+  QXLSX_PARENTPATH=QXlsx1/
+  QXLSX_HEADERPATH=QXlsx1/header/
+  QXLSX_SOURCEPATH=QXlsx1/source/
+include(QXlsx1/QXlsx.pri)
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
