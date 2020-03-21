@@ -45,7 +45,17 @@ MainWindow::~MainWindow()
         delete gridLabel[i];
         delete gridlineEdit[i];
     }
-
+    delete buttonNhap;
+    delete buttonSave;
+    delete comboBox;
+    delete item1[ViTriNgay];
+    delete item1[ViTriSo];
+    delete item1[ViTriMaSanPham] ;
+    delete item1[ViTriLoai];
+    delete item1[ViTriMaNhanVien];
+    delete item1[ViTriNhanVien];
+    delete myModel;
+    delete view;
 }
 void MainWindow::creatMenu()
 {
@@ -78,7 +88,8 @@ void MainWindow::creategridGroupBox()
 
     gridLayout = new QGridLayout();
     comboBox = new QComboBox();
-    comboBox->addItems(ThongTinNhanVien.keys());
+
+    comboBox->addItems(HienThiCombobox);
     buttonNhap = new QPushButton(tr(" Nhap "));
     buttonSave = new QPushButton(tr(" Luu Ra File "));
     QMap<int,QString >::iterator iterator;
@@ -181,16 +192,15 @@ void MainWindow::readDataBase()
         {
             cellkey = xlsxR.cellAt(row, colkey); // get cell pointer.
             cellvalue = xlsxR.cellAt(row, colvalue); // get cell pointer.
-            if ( cellkey != NULL )
+            if( cellkey == NULL || cellvalue == NULL )
             {
-                keyRead = cellkey->readValue().toString(); // read cell value (number(double), QDateTime, QString ...)
+                break;
             }
-            if ( cellvalue != NULL )
-            {
-                valueRead = cellvalue->readValue().toString(); // read cell value (number(double), QDateTime, QString ...)
-            }
-             row++;
-             ThongTinNhanVien.insert( keyRead, valueRead );
+            keyRead = cellkey->readValue().toString(); // read cell value (number(double), QDateTime, QString ...)
+            valueRead = cellvalue->readValue().toString(); // read cell value (number(double), QDateTime, QString ...)
+            row++;
+            HienThiCombobox.append(keyRead);
+            ThongTinNhanVien.insert( keyRead, valueRead );
         }
         while( cellkey != NULL && cellvalue != NULL );
     }

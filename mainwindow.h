@@ -55,7 +55,6 @@ class MainWindow : public QMainWindow
 private:
     QMenuBar    *menuBar;
     QMenu       *fileMenu;
-    QGroupBox   *horizonGroup;
     QGroupBox   *gridGroup;
     QGridLayout *gridLayout;
     QLineEdit   *gridlineEdit[SOLUONG];
@@ -75,6 +74,7 @@ private:
     QStandardItem *item1[SOLUONG];
     QMap<QString,QString > ThongTinNhanVien;
     QMap< int, QString > HienThiCanNhap;
+    QList<QString> HienThiCombobox;
     int SoLanNhap;
     void creatMenu();
     void creatHorizonGroupBox();
