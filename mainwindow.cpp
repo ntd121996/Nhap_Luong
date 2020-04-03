@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
     mainLayout->addWidget(mainWindow);
     mainLayout->addWidget(this->gridGroup);
     mainLayout->addWidget(this->view);
-    mainLayout->addWidget(new QLabel("Application Version 0.3. Made by DuyNT"));
+    mainLayout->addWidget(new QLabel("Application Version 0.. Made by DuyNT"));
 
     this->setLayout(mainLayout);
     this->resize(630,500);
@@ -121,98 +121,59 @@ void MainWindow::creategridGroupBox()
     gridLayout->addWidget(buttonNhap,0,2,3,1);
     gridGroup->setLayout( gridLayout );
 }
-
 void MainWindow::ButtonNhapClicked()
 {
-
-   QStringList splitString;
-   QList<QString> Sum;
-   int tong = 0;
-   Ngay = gridlineEdit[ViTriNgay]->text();
-   if(!Ngay.isEmpty())
-   {
-       So = 'N'+Ngay.left(2);
-   }
-   qDebug() << "So:" << So;
-   MaSanPham = gridlineEdit[ViTriMaSanPham]->text();
-
-   Loai = gridlineEdit[ViTriLoai]->text();
-   gridlineEdit[ViTriLoai]->clear();
-   splitString = Loai.split(' ',QString::SkipEmptyParts);
-   while( !splitString.isEmpty())
-   {
-       Sum.append(splitString.takeFirst());
-       tong += Sum.takeFirst().toInt();
-   }
-   qDebug() << "Tong:" << tong;
-   if(tong != 0 )Loai = QString::number(tong);
-
-   TenNhanVien = comboBox->currentText();
-   MaNhanVien = ThongTinNhanVien.value( TenNhanVien );
-
-   item1[ViTriNgay] = new QStandardItem(Ngay);
-   item1[ViTriSo] = new QStandardItem(So);
-   item1[ViTriMaSanPham] = new QStandardItem(MaSanPham);
-   item1[ViTriLoai] = new QStandardItem();
-   item1[ViTriMaNhanVien] = new QStandardItem(MaNhanVien);
-   item1[ViTriNhanVien] = new QStandardItem(TenNhanVien);
-
-   myModel->setItem(SoLanNhap, Tag_Ngay, item1[ViTriNgay]);
-   myModel->setItem(SoLanNhap, Tag_So,item1[ViTriSo]);
-   myModel->setItem(SoLanNhap, Tag_MaNhanVien ,item1[ViTriMaNhanVien]);
-   myModel->setItem(SoLanNhap, Tag_NhanVien,item1[ViTriNhanVien]);
-   myModel->setItem(SoLanNhap, Tag_MaSanPham,item1[ViTriMaSanPham]);
-   myModel->setItem(SoLanNhap, Tag_Loai,item1[ViTriLoai]);
-   if(tong != 0 )myModel->setData(myModel->index(SoLanNhap, ViTriLoai ),QVariant(tong));
-
+   getValueFromUser();
+   createItemModel();
+   setItemModel();
    view->scrollToBottom();
    SoLanNhap++;
-
 }
-
 void MainWindow::ButtonSaveClicked()
 {
-
-    QStringList splitString;
-    QString Temp;
-    if(firstSave)
-    {
-        fileDialog = new QFileDialog();
-        fileDialog->exec();
-        Temp = fileDialog->selectedFiles().takeFirst();
-        splitString = Temp.split('/',QString::SkipEmptyParts);
-        Temp = splitString.takeLast();
-        firstSave = false;
-    }
-    if( Temp.compare(Temp.right(4),"xlsx") == 0 )
-    {
-        fileName = Temp;
-    }
+    getFileName();
     QXlsx::Document xlsxW(fileName);
-    int row = 2;
-    int col = 1;
     int rowCount = myModel->rowCount();
     int colCount = myModel->columnCount();
-    xlsxW.write("A1", "So");
-    xlsxW.write("B1", "Ngay");
-    xlsxW.write("C1", "Ma NV");
-    xlsxW.write("D1", "Nhan Vien");
-    xlsxW.write("E1", "Ma Sp");
-    xlsxW.write("F1", "Loai 1");
-    xlsxW.selectSheet("Sheet1");
-    for( int i = 0; i < rowCount; i++,row++)
+    int rowIndex = 0;
+    int colIndex = 0;
+    int rowWrite = 0;
+    int colWrite = 0;
+    if( fileName == "Test.xlsx")
     {
-        col = 1;
-        for( int j = 0; j < colCount; j++,col++)
+        rowWrite = 2;
+        colWrite = 1;
+        xlsxW.write("A1", "So");
+        xlsxW.write("B1", "Ngay");
+        xlsxW.write("C1", "Ma NV");
+        xlsxW.write("D1", "Nhan Vien");
+        xlsxW.write("E1", "Ma Sp");
+        xlsxW.write("F1", "Loai 1");
+        xlsxW.selectSheet("Sheet1");
+    }
+    // File is exist
+    else
+    {
+//        Select Sheet to write
+//        xlsxW.selectSheet("Sheet1");
+//        Set up row,column to write
+//        rowWrite = ?;
+//        colWrite = ?;
+    }
+    rowIndex = rowWrite;
+    colIndex = colWrite;
+    for( int i = 0; i < rowCount; i++,rowIndex++)
+    {
+        colIndex = colWrite;
+        for( int j = 0; j < colCount; j++,colIndex++)
         {
-            xlsxW.write(row, col, myModel->data(myModel->index(i, j)));
+            xlsxW.write(rowIndex, colIndex, myModel->data(myModel->index(i, j)));
         }
     }
     xlsxW.autosizeColumnWidth(1,6);
-    if( xlsxW.save()) QMessageBox::information(this,tr("Luu Thanh Cong"),tr("Have A Nice Day My Darling <3 !!! "));
+    if( xlsxW.save()) QMessageBox::information(this,tr("Luu Thanh Cong"),tr("Have A Nice Day My Dear <3 "));
 
 }
-
 void MainWindow::readDataBase()
 {
     QXlsx::Document xlsxR("ThongTin.xlsx");
@@ -242,7 +203,6 @@ void MainWindow::readDataBase()
         while( cellkey != NULL && cellvalue != NULL );
     }
 }
-
 void MainWindow::Delete()
 {
     QModelIndexList selected = view->selectionModel()->selectedRows();
@@ -271,4 +231,68 @@ void MainWindow::DeleteAll()
     myModel->setRowCount(0);
     myModel->setColumnCount(6);
     SoLanNhap = 0;
+}
+void MainWindow::getValueFromUser()
+{
+    QStringList splitString;
+    QList<QString> Sum;
+    int tong = 0;
+    Ngay = gridlineEdit[ViTriNgay]->text();
+    if(!Ngay.isEmpty())
+    {
+        So = 'N'+Ngay.left(2);
+    }
+    MaSanPham = gridlineEdit[ViTriMaSanPham]->text();
+
+    Loai = gridlineEdit[ViTriLoai]->text();
+    gridlineEdit[ViTriLoai]->clear();
+    splitString = Loai.split(' ',QString::SkipEmptyParts);
+    while( !splitString.isEmpty())
+    {
+        Sum.append(splitString.takeFirst());
+        tong += Sum.takeFirst().toInt();
+    }
+    if(tong != 0) Loai = QString::number(tong);
+    TenNhanVien = comboBox->currentText();
+    MaNhanVien = ThongTinNhanVien.value( TenNhanVien );
+}
+void MainWindow::createItemModel()
+{
+    item1[ViTriNgay] = new QStandardItem(Ngay);
+    item1[ViTriSo] = new QStandardItem(So);
+    item1[ViTriMaSanPham] = new QStandardItem(MaSanPham);
+    item1[ViTriLoai] = new QStandardItem(Loai);
+    item1[ViTriMaNhanVien] = new QStandardItem(MaNhanVien);
+    item1[ViTriNhanVien] = new QStandardItem(TenNhanVien);
+}
+void MainWindow::setItemModel()
+{
+    myModel->setItem(SoLanNhap, Tag_Ngay, item1[ViTriNgay]);
+    myModel->setItem(SoLanNhap, Tag_So,item1[ViTriSo]);
+    myModel->setItem(SoLanNhap, Tag_MaNhanVien ,item1[ViTriMaNhanVien]);
+    myModel->setItem(SoLanNhap, Tag_NhanVien,item1[ViTriNhanVien]);
+    myModel->setItem(SoLanNhap, Tag_MaSanPham,item1[ViTriMaSanPham]);
+    myModel->setItem(SoLanNhap, Tag_Loai,item1[ViTriLoai]);
+    if(Loai.toInt()!= 0)
+    {
+        myModel->setData(myModel->index(SoLanNhap, ViTriLoai ),QVariant(Loai.toInt()));
+    }
+}
+void MainWindow::getFileName()
+{
+    QStringList splitString;
+    QString Temp;
+    if(firstSave)
+    {
+        firstSave = false;
+        fileDialog = new QFileDialog();
+        fileDialog->exec();
+        Temp = fileDialog->selectedFiles().takeFirst();
+        splitString = Temp.split('/',QString::SkipEmptyParts);
+        Temp = splitString.takeLast();
+        if( Temp.compare(Temp.right(4),"xlsx") == 0 )
+        {
+            fileName = Temp;
+        }
+    }
 }

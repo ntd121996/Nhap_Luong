@@ -104,6 +104,10 @@ private:
     void createFormGroupBox();
     void creatTableView();
     void readDataBase();
+    void getValueFromUser();
+    void createItemModel();
+    void setItemModel();
+    void getFileName();
 private slots:
     void ButtonNhapClicked();
     void ButtonSaveClicked();
