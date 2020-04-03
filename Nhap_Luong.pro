@@ -21,13 +21,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
 #    ExcelExportHelper.cpp \
-    dulieu.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
 #    ExcelExportHelper.h \
-    dulieu.h \
     mainwindow.h
 
   QXLSX_PARENTPATH=QXlsx1/
