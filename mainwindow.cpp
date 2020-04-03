@@ -285,7 +285,9 @@ void MainWindow::getFileName()
     if(firstSave)
     {
         firstSave = false;
-        fileDialog = new QFileDialog();
+        fileDialog = new QFileDialog(this);
+        fileDialog->setNameFilter(tr("Excel File (*.xlsx)"));
+        fileDialog->setViewMode(QFileDialog::Detail);
         fileDialog->exec();
         Temp = fileDialog->selectedFiles().takeFirst();
         splitString = Temp.split('/',QString::SkipEmptyParts);
