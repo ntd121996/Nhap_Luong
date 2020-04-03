@@ -7,8 +7,8 @@ MainWindow::MainWindow(QWidget *parent)
     QMainWindow * mainWindow = new QMainWindow();
     SoLanNhap = 0;
     firstSave = true;
-    fileName = "Test.xlsx";
-
+    fileName.clear();
+    qDebug() << fileName.isNull();
     HienThiCanNhap.insert( ViTriNgay," Ngay: ");
 //    HienThiCanNhap.insert( ViTriSo," So: ");
     HienThiCanNhap.insert( ViTriLoai," Loai: ");
@@ -132,6 +132,10 @@ void MainWindow::ButtonNhapClicked()
 void MainWindow::ButtonSaveClicked()
 {
     getFileName();
+    if( fileName.isNull())
+    {
+        fileName = "Test.xlsx";
+    }
     QXlsx::Document xlsxW(fileName);
     int rowCount = myModel->rowCount();
     int colCount = myModel->columnCount();
@@ -160,6 +164,7 @@ void MainWindow::ButtonSaveClicked()
 //        rowWrite = ?;
 //        colWrite = ?;
     }
+
     rowIndex = rowWrite;
     colIndex = colWrite;
     for( int i = 0; i < rowCount; i++,rowIndex++)
@@ -286,7 +291,7 @@ void MainWindow::getFileName()
     {
         firstSave = false;
         fileDialog = new QFileDialog(this);
-        fileDialog->setNameFilter(tr("Excel File (*.xlsx)"));
+        fileDialog->setNameFilter(tr("Filter File (*.png *.xlsx)"));
         fileDialog->setViewMode(QFileDialog::Detail);
         fileDialog->exec();
         Temp = fileDialog->selectedFiles().takeFirst();
