@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent)
     SoLanNhap = 0;
     firstSave = true;
     fileName.clear();
-    qDebug() << fileName.isNull();
+//    qDebug() << fileName.isNull();
     HienThiCanNhap.insert( ViTriNgay," Ngay: ");
 //    HienThiCanNhap.insert( ViTriSo," So: ");
     HienThiCanNhap.insert( ViTriLoai," Loai: ");
@@ -35,6 +35,10 @@ MainWindow::MainWindow(QWidget *parent)
     buttonNhap->setAutoDefault(true);
     buttonNhap->setDefault(false);
     buttonNhap->setPalette(QPalette(Qt::darkYellow));
+    this->gridlineEdit[ViTriMaSanPham]->setFocus();
+    this->gridlineEdit[ViTriNgay]->setFocusPolicy(Qt::ClickFocus);
+    this->view->setFocusPolicy(Qt::NoFocus);
+
 
     connect(buttonNhap,SIGNAL(clicked()),this,SLOT(ButtonNhapClicked()));
     connect(deleteAction,&QAction::triggered,this,&MainWindow::Delete);
@@ -45,25 +49,10 @@ MainWindow::~MainWindow()
 {
     delete menuBar;
     delete fileMenu;
-    delete gridGroup;
     delete gridLayout;
-    for ( int i = 0; i < HienThiCanNhap.size(); ++i )
-    {
-        delete gridLabel[i];
-    }
-    delete gridlineEdit[ViTriNgay];
-    delete gridlineEdit[ViTriMaSanPham];
-    delete gridlineEdit[ViTriSo];
-    delete gridlineEdit[ViTriLoai];
     delete buttonNhap;
-
     delete comboBox;
-    delete item1[ViTriNgay];
-    delete item1[ViTriSo];
-    delete item1[ViTriMaSanPham] ;
-    delete item1[ViTriLoai];
-    delete item1[ViTriMaNhanVien];
-    delete item1[ViTriNhanVien];
+    delete gridGroup;
     delete myModel;
     delete view;
     delete fileDialog;
@@ -127,6 +116,9 @@ void MainWindow::ButtonNhapClicked()
    createItemModel();
    setItemModel();
    view->scrollToBottom();
+   this->comboBox->setFocus();
+
+
    SoLanNhap++;
 }
 void MainWindow::ButtonSaveClicked()
@@ -154,27 +146,59 @@ void MainWindow::ButtonSaveClicked()
         xlsxW.write("E1", "Ma Sp");
         xlsxW.write("F1", "Loai 1");
         xlsxW.selectSheet("Sheet1");
+        rowIndex = rowWrite;
+        colIndex = colWrite;
+        for( int i = 0; i < rowCount; i++,rowIndex++)
+        {
+            colIndex = colWrite;
+            for( int j = 0; j < colCount; j++,colIndex++)
+            {
+                xlsxW.write(rowIndex, colIndex, myModel->data(myModel->index(i, j)));
+            }
+        }
     }
     // File is exist
     else
     {
-//        Select Sheet to write
-//        xlsxW.selectSheet("Sheet1");
-//        Set up row,column to write
-//        rowWrite = ?;
-//        colWrite = ?;
-    }
-
-    rowIndex = rowWrite;
-    colIndex = colWrite;
-    for( int i = 0; i < rowCount; i++,rowIndex++)
-    {
-        colIndex = colWrite;
-        for( int j = 0; j < colCount; j++,colIndex++)
+        xlsxW.load();
+        xlsxW.selectSheet("Nhập");
+        Cell* cellkey = NULL;
+        int nextRow = 6;
+        do
         {
-            xlsxW.write(rowIndex, colIndex, myModel->data(myModel->index(i, j)));
+            cellkey = xlsxW.cellAt(nextRow, 4); // get cell pointer.
+            if( cellkey == NULL )
+            {
+                break;
+            }
+            if( cellkey->readValue().isNull())
+            {
+                break;
+            }
+            nextRow++;
+        }
+        while(cellkey != NULL);
+//        qDebug() << row;
+//        Select Sheet to write
+
+//        Set up row,column to write
+        rowWrite = nextRow;
+        colWrite = 1;
+
+        rowIndex = rowWrite;
+        colIndex = colWrite;
+        for( int i = 0; i < rowCount; i++,rowIndex++)
+        {
+            colIndex = colWrite;
+            for( int j = 0; j < colCount; j++,colIndex++)
+            {
+                if(colIndex == 6 ) colIndex = 8;
+                xlsxW.write(rowIndex, colIndex, myModel->data(myModel->index(i, j)));
+            }
         }
     }
+
+
     xlsxW.autosizeColumnWidth(1,6);
     if( xlsxW.save()) QMessageBox::information(this,tr("Luu Thanh Cong"),tr("Have A Nice Day My Dear <3 "));
 
@@ -223,7 +247,7 @@ void MainWindow::DeleteAll()
 {
     int rowCount = myModel->rowCount();
     int colCount = myModel->columnCount();
-    qDebug() <<"Row:" <<rowCount << "Col:" <<colCount;
+//    qDebug() <<"Row:" <<rowCount << "Col:" <<colCount;
     for( int i = 0; i < rowCount; i++)
     {
 
@@ -248,7 +272,7 @@ void MainWindow::getValueFromUser()
         So = 'N'+Ngay.left(2);
     }
     MaSanPham = gridlineEdit[ViTriMaSanPham]->text();
-
+    qDebug() << MaSanPham;
     Loai = gridlineEdit[ViTriLoai]->text();
     gridlineEdit[ViTriLoai]->clear();
     splitString = Loai.split(' ',QString::SkipEmptyParts);
@@ -266,9 +290,11 @@ void MainWindow::createItemModel()
     item1[ViTriNgay] = new QStandardItem(Ngay);
     item1[ViTriSo] = new QStandardItem(So);
     item1[ViTriMaSanPham] = new QStandardItem(MaSanPham);
+
     item1[ViTriLoai] = new QStandardItem(Loai);
     item1[ViTriMaNhanVien] = new QStandardItem(MaNhanVien);
     item1[ViTriNhanVien] = new QStandardItem(TenNhanVien);
+//    qDebug() << MaSanPham << item1[ViTriMaSanPham];
 }
 void MainWindow::setItemModel()
 {
@@ -280,8 +306,9 @@ void MainWindow::setItemModel()
     myModel->setItem(SoLanNhap, Tag_Loai,item1[ViTriLoai]);
     if(Loai.toInt()!= 0)
     {
-        myModel->setData(myModel->index(SoLanNhap, ViTriLoai ),QVariant(Loai.toInt()));
+        myModel->setData(myModel->index(SoLanNhap, Tag_Loai ),QVariant(Loai.toInt()));
     }
+
 }
 void MainWindow::getFileName()
 {

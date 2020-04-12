@@ -60,8 +60,8 @@ enum
     ViTriNgay,
     ViTriNhanVien,
     ViTriMaNhanVien,
-    ViTriMaSanPham,
     ViTriLoai,
+    ViTriMaSanPham,
     SOLUONG
 };
 
