@@ -8,12 +8,23 @@ MainWindow::MainWindow(QWidget *parent)
     SoLanNhap = 0;
     firstSave = true;
     fileName.clear();
-//    qDebug() << fileName.isNull();
+//    qDebug()/* << 0 + rand()% (9 + 1 - 0);*/
     HienThiCanNhap.insert( ViTriNgay," Ngay: ");
 //    HienThiCanNhap.insert( ViTriSo," So: ");
     HienThiCanNhap.insert( ViTriLoai," Loai: ");
     HienThiCanNhap.insert( ViTriNhanVien," NhanVien: ");
     HienThiCanNhap.insert( ViTriMaSanPham," Ma SP: ");
+    LoiChuc.append("Have A Nice Day My Dear <3 ");
+    LoiChuc.append("Nguyen Thai Duy Love Truong My Hoa ");
+    LoiChuc.append("Luon Vui Ve Nhe Em Yeu <3 ");
+    LoiChuc.append("Anh Nho Em, Vo Iu A ,Hiu Hiu T.T !!!! ");
+    LoiChuc.append("Wo Ai Ni, Saranghaeyo, Tiamo <3 ");
+    LoiChuc.append("I've Died Every Day Because Miss U T.T ");
+    LoiChuc.append("Keep Calm And Love Thai Duy Much More, My Love <3 ");
+    LoiChuc.append("A Khong Luon Leo Dau Nhe, Chi Yeu Em Thoi,Hi Hi :p");
+    LoiChuc.append("Em Cuoi Dep Gap Van Lan Luc Em Cau Gian, Be Smile ^_^ ");
+    LoiChuc.append("I Will Love U Every Morning !!!");
+
     readDataBase();
     creatMenu();
     creategridGroupBox();
@@ -35,6 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
     buttonNhap->setAutoDefault(true);
     buttonNhap->setDefault(false);
     buttonNhap->setPalette(QPalette(Qt::darkYellow));
+    buttonNhap->setFocusPolicy(Qt::ClickFocus);
     this->gridlineEdit[ViTriMaSanPham]->setFocus();
     this->gridlineEdit[ViTriNgay]->setFocusPolicy(Qt::ClickFocus);
     this->view->setFocusPolicy(Qt::NoFocus);
@@ -55,7 +67,6 @@ MainWindow::~MainWindow()
     delete gridGroup;
     delete myModel;
     delete view;
-    delete fileDialog;
 }
 void MainWindow::creatMenu()
 {
@@ -95,6 +106,7 @@ void MainWindow::creategridGroupBox()
     comboBox->addItems(HienThiCombobox);
     comboBox->view()->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     buttonNhap = new QPushButton(tr(" Nhap "));
+
     QMap<int,QString >::iterator iterator;
     for(iterator = HienThiCanNhap.begin(); iterator != HienThiCanNhap.end(); iterator++ )
     {
@@ -105,9 +117,10 @@ void MainWindow::creategridGroupBox()
         gridLayout->addWidget( gridlineEdit[ iterator.key()], iterator.key(), 1);
     }
 
+    gridLayout->addWidget(buttonNhap,0,2,3,1);
     gridLayout->addWidget( gridLabel[ ViTriNhanVien ], ViTriNhanVien, 0 );
     gridLayout->addWidget( comboBox, ViTriNhanVien, 1 );
-    gridLayout->addWidget(buttonNhap,0,2,3,1);
+
     gridGroup->setLayout( gridLayout );
 }
 void MainWindow::ButtonNhapClicked()
@@ -135,7 +148,7 @@ void MainWindow::ButtonSaveClicked()
     int colIndex = 0;
     int rowWrite = 0;
     int colWrite = 0;
-    if( fileName == "Test.xlsx")
+    if( fileName.compare(fileName.right(9),"Test.xlsx") == 0 )
     {
         rowWrite = 2;
         colWrite = 1;
@@ -156,6 +169,7 @@ void MainWindow::ButtonSaveClicked()
                 xlsxW.write(rowIndex, colIndex, myModel->data(myModel->index(i, j)));
             }
         }
+        xlsxW.autosizeColumnWidth(1,6);
     }
     // File is exist
     else
@@ -198,9 +212,7 @@ void MainWindow::ButtonSaveClicked()
         }
     }
 
-
-    xlsxW.autosizeColumnWidth(1,6);
-    if( xlsxW.save()) QMessageBox::information(this,tr("Luu Thanh Cong"),tr("Have A Nice Day My Dear <3 "));
+    if( xlsxW.save()) QMessageBox::information(this,tr("Luu Thanh Cong"),LoiChuc.at((0 + rand()% (9 + 1 - 0))));
 
 }
 void MainWindow::readDataBase()
@@ -314,19 +326,16 @@ void MainWindow::getFileName()
 {
     QStringList splitString;
     QString Temp;
-    if(firstSave)
+    fileDialog = new QFileDialog(this);
+    fileDialog->setNameFilter(tr("Filter File (*.png *.xlsx)"));
+    fileDialog->setViewMode(QFileDialog::Detail);
+    fileDialog->exec();
+    fileName = fileDialog->selectedFiles().takeFirst();
+    Temp = fileName;
+    splitString = Temp.split('/',QString::SkipEmptyParts);
+    Temp = splitString.takeLast();
+    if( Temp.compare(Temp.right(4),"xlsx") != 0 )
     {
-        firstSave = false;
-        fileDialog = new QFileDialog(this);
-        fileDialog->setNameFilter(tr("Filter File (*.png *.xlsx)"));
-        fileDialog->setViewMode(QFileDialog::Detail);
-        fileDialog->exec();
-        Temp = fileDialog->selectedFiles().takeFirst();
-        splitString = Temp.split('/',QString::SkipEmptyParts);
-        Temp = splitString.takeLast();
-        if( Temp.compare(Temp.right(4),"xlsx") == 0 )
-        {
-            fileName = Temp;
-        }
+        fileName.clear();
     }
 }

@@ -94,6 +94,7 @@ private:
     QMap<QString,QString > ThongTinNhanVien;
     QMap< int, QString > HienThiCanNhap;
     QList<QString> HienThiCombobox;
+    QList<QString> LoiChuc;
     QString fileName;
 
     bool firstSave;
